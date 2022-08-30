@@ -23,6 +23,12 @@ help: Makefile
 build: validate/validate.pb.go ## generates the PGV binary and installs it into $$GOPATH/bin
 	go install .
 
+.PHONY: binaries
+binaries: validate/validate.pb.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags "-s -w" -o protoc-gen-validate-Linux-x86_64
+	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -ldflags "-s -w" -o protoc-gen-validate-Darwin-x86_64
+	CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -ldflags "-s -w" -o protoc-gen-validate-Darwin-arm64
+
 .PHONY: bazel
 bazel: ## generate the PGV plugin with Bazel
 	bazel build //tests/...
